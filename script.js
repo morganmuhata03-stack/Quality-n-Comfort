@@ -103,6 +103,10 @@ function showView(viewName) {
   const target = document.getElementById(`view-${viewName}`);
   if (target) target.classList.add("active");
 
+  document.querySelectorAll(".nav-link[data-view]").forEach(btn => {
+    btn.classList.toggle("active-nav", btn.getAttribute("data-view") === viewName);
+  });
+
   if (viewName === "account") {
     renderAccountView();
   }
@@ -118,7 +122,7 @@ document.querySelectorAll("[data-view]").forEach(el => {
    Product rendering
    =========================== */
 const productGrid = document.getElementById("product-grid");
-const categoryFilter = document.getElementById("category-filter");
+const categoryFilterGroup = document.getElementById("category-filter-group");
 
 function renderProducts(filterCategory = "all") {
   productGrid.innerHTML = "";
@@ -179,8 +183,12 @@ function renderProducts(filterCategory = "all") {
   });
 }
 
-categoryFilter.addEventListener("change", () => {
-  renderProducts(categoryFilter.value);
+categoryFilterGroup.querySelectorAll(".filter-chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    categoryFilterGroup.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    renderProducts(chip.getAttribute("data-category"));
+  });
 });
 
 /* ===========================

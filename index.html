@@ -4,9 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Basic Clothing Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<div class="utility-bar">
+  <div class="utility-bar-inner">Find a Store &middot; Help</div>
+</div>
 
 <header class="site-header">
   <div class="header-inner">
@@ -26,10 +33,12 @@
 
   <!-- HOME VIEW -->
   <section id="view-home" class="view">
-    <div class="hero">
-      <h1>Simple Clothes. No Fuss.</h1>
-      <p>Basic, everyday clothing and accessories. Browse the shop to get started.</p>
-      <button class="btn btn-primary" data-view="shop">Go to Shop</button>
+    <div class="campaign-tile">
+      <div class="campaign-tile-copy">
+        <h1 class="campaign-headline">Simple Clothes.<br>No Fuss.</h1>
+        <p class="campaign-subtext">Basic, everyday clothing and accessories.</p>
+      </div>
+      <button class="btn btn-outline-on-image" data-view="shop">Shop Now</button>
     </div>
   </section>
 
@@ -37,14 +46,11 @@
   <section id="view-shop" class="view">
     <h2>Shop</h2>
 
-    <div class="filter-bar">
-      <label for="category-filter">Category:</label>
-      <select id="category-filter">
-        <option value="all">All</option>
-        <option value="tops">Tops</option>
-        <option value="bottoms">Bottoms</option>
-        <option value="accessories">Accessories</option>
-      </select>
+    <div class="filter-bar" id="category-filter-group">
+      <button type="button" class="filter-chip active" data-category="all">All</button>
+      <button type="button" class="filter-chip" data-category="tops">Tops</button>
+      <button type="button" class="filter-chip" data-category="bottoms">Bottoms</button>
+      <button type="button" class="filter-chip" data-category="accessories">Accessories</button>
     </div>
 
     <div id="product-grid" class="product-grid">
@@ -160,8 +166,8 @@
 </main>
 
 <footer class="site-footer">
-  <p>Contact us: support@plainwear.example | (555) 010-1234</p>
-  <p>&copy; 2026 Plainwear. All rights reserved.</p>
+  <p class="footer-contact">Contact us: support@plainwear.example &middot; (555) 010-1234</p>
+  <p class="footer-copyright">&copy; 2026 Plainwear. All rights reserved.</p>
 </footer>
 
 <script src="script.js"></script>
