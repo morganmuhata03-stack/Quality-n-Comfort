@@ -340,6 +340,114 @@ button {
 }
 
 /* ===========================
+   Account / Auth
+   =========================== */
+#auth-forms,
+.account-panel {
+  max-width: 360px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid #d8d5cf;
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 1rem;
+  border: 1px solid #b0a99f;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  background-color: #ece9e3;
+  border: none;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  color: #2b2b2b;
+}
+
+.auth-tab-btn.active {
+  background-color: #4a5d52;
+  color: #f5f5f3;
+}
+
+.auth-tab-btn:hover {
+  background-color: #9c9488;
+  color: #fff;
+}
+
+.auth-form {
+  display: none;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.auth-form.active {
+  display: flex;
+}
+
+.auth-form h2 {
+  margin-bottom: 0.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-field label {
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.form-field input {
+  padding: 0.5rem;
+  border: 1px solid #b0a99f;
+  border-radius: 3px;
+  font-size: 0.95rem;
+}
+
+.form-field input.invalid {
+  border-color: #a65c5c;
+}
+
+.field-error {
+  color: #a65c5c;
+  font-size: 0.8rem;
+  min-height: 1em;
+}
+
+.form-message {
+  padding: 0.5rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+}
+
+.form-message.success {
+  background-color: #e5ece7;
+  border: 1px solid #4a5d52;
+  color: #2b2b2b;
+}
+
+.form-message.error {
+  background-color: #f4e6e6;
+  border: 1px solid #a65c5c;
+  color: #2b2b2b;
+}
+
+.account-panel p {
+  margin-bottom: 0.5rem;
+}
+
+.account-panel #logout-btn {
+  margin-top: 0.5rem;
+}
+
+/* ===========================
    Footer
    =========================== */
 .site-footer {

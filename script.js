@@ -43,12 +43,69 @@ function saveCart() {
 }
 
 /* ===========================
+   Auth state (persisted to localStorage)
+   NOTE: This is a front-end-only demo. Passwords are stored in
+   plain text in localStorage because there is no backend/server.
+   Do not reuse this pattern for a real production site.
+   Users shape: { fullName, phone, password }
+   =========================== */
+const USERS_STORAGE_KEY = "plainwear_users";
+const CURRENT_USER_STORAGE_KEY = "plainwear_current_user";
+
+let users = loadUsers();
+let currentUser = loadCurrentUser();
+
+function loadUsers() {
+  try {
+    const raw = localStorage.getItem(USERS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (err) {
+    console.error("Failed to load users from localStorage:", err);
+    return [];
+  }
+}
+
+function saveUsers() {
+  try {
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+  } catch (err) {
+    console.error("Failed to save users to localStorage:", err);
+  }
+}
+
+function loadCurrentUser() {
+  try {
+    const raw = localStorage.getItem(CURRENT_USER_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) {
+    console.error("Failed to load current user from localStorage:", err);
+    return null;
+  }
+}
+
+function saveCurrentUser() {
+  try {
+    if (currentUser) {
+      localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
+    }
+  } catch (err) {
+    console.error("Failed to save current user to localStorage:", err);
+  }
+}
+
+/* ===========================
    View navigation
    =========================== */
 function showView(viewName) {
   document.querySelectorAll(".view").forEach(el => el.classList.remove("active"));
   const target = document.getElementById(`view-${viewName}`);
   if (target) target.classList.add("active");
+
+  if (viewName === "account") {
+    renderAccountView();
+  }
 }
 
 document.querySelectorAll("[data-view]").forEach(el => {
@@ -266,6 +323,190 @@ function renderCart() {
 }
 
 /* ===========================
+   Account / Auth logic
+   =========================== */
+const accountNavBtn = document.getElementById("account-nav-btn");
+const authFormsWrapper = document.getElementById("auth-forms");
+const accountPanel = document.getElementById("account-panel");
+
+const loginForm = document.getElementById("login-form");
+const signupForm = document.getElementById("signup-form");
+
+// Basic phone validation: digits, optional leading +, 7-15 digits total.
+const PHONE_REGEX = /^\+?[0-9]{7,15}$/;
+
+function normalizePhone(phone) {
+  return phone.replace(/[\s\-().]/g, "");
+}
+
+function renderAccountView() {
+  if (currentUser) {
+    authFormsWrapper.hidden = true;
+    accountPanel.hidden = false;
+    document.getElementById("account-welcome").textContent = `Logged in as ${currentUser.fullName}`;
+    document.getElementById("account-phone").textContent = `Phone: ${currentUser.phone}`;
+  } else {
+    authFormsWrapper.hidden = false;
+    accountPanel.hidden = true;
+  }
+  updateAccountNavLabel();
+}
+
+function updateAccountNavLabel() {
+  accountNavBtn.textContent = currentUser ? `Hi, ${currentUser.fullName.split(" ")[0]}` : "Login";
+}
+
+/* --- Tab switching between Log In / Sign Up --- */
+document.querySelectorAll(".auth-tab-btn").forEach(tabBtn => {
+  tabBtn.addEventListener("click", () => {
+    const tab = tabBtn.getAttribute("data-auth-tab");
+
+    document.querySelectorAll(".auth-tab-btn").forEach(b => b.classList.remove("active"));
+    tabBtn.classList.add("active");
+
+    document.querySelectorAll(".auth-form").forEach(f => f.classList.remove("active"));
+    document.getElementById(`${tab}-form`).classList.add("active");
+
+    clearFormMessage("login-form-message");
+    clearFormMessage("signup-form-message");
+  });
+});
+
+/* --- Validation helpers --- */
+function setFieldError(inputId, errorId, message) {
+  document.getElementById(inputId).classList.toggle("invalid", Boolean(message));
+  document.getElementById(errorId).textContent = message || "";
+}
+
+function showFormMessage(elementId, message, type) {
+  const el = document.getElementById(elementId);
+  el.hidden = false;
+  el.textContent = message;
+  el.className = `form-message ${type}`;
+}
+
+function clearFormMessage(elementId) {
+  const el = document.getElementById(elementId);
+  el.hidden = true;
+  el.textContent = "";
+  el.className = "form-message";
+}
+
+/* --- Sign Up --- */
+signupForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  clearFormMessage("signup-form-message");
+
+  const nameInput = document.getElementById("signup-name");
+  const phoneInput = document.getElementById("signup-phone");
+  const passwordInput = document.getElementById("signup-password");
+
+  const fullName = nameInput.value.trim();
+  const phone = normalizePhone(phoneInput.value.trim());
+  const password = passwordInput.value;
+
+  let hasError = false;
+
+  if (!fullName) {
+    setFieldError("signup-name", "signup-name-error", "Full name is required.");
+    hasError = true;
+  } else {
+    setFieldError("signup-name", "signup-name-error", "");
+  }
+
+  if (!phone) {
+    setFieldError("signup-phone", "signup-phone-error", "Phone number is required.");
+    hasError = true;
+  } else if (!PHONE_REGEX.test(phone)) {
+    setFieldError("signup-phone", "signup-phone-error", "Enter a valid phone number (7-15 digits).");
+    hasError = true;
+  } else if (users.some(u => u.phone === phone)) {
+    setFieldError("signup-phone", "signup-phone-error", "An account with this phone number already exists.");
+    hasError = true;
+  } else {
+    setFieldError("signup-phone", "signup-phone-error", "");
+  }
+
+  if (!password) {
+    setFieldError("signup-password", "signup-password-error", "Password is required.");
+    hasError = true;
+  } else if (password.length < 6) {
+    setFieldError("signup-password", "signup-password-error", "Password must be at least 6 characters.");
+    hasError = true;
+  } else {
+    setFieldError("signup-password", "signup-password-error", "");
+  }
+
+  if (hasError) return;
+
+  const newUser = { fullName, phone, password };
+  users.push(newUser);
+  saveUsers();
+
+  currentUser = newUser;
+  saveCurrentUser();
+
+  signupForm.reset();
+  showFormMessage("signup-form-message", "Account created successfully!", "success");
+  renderAccountView();
+});
+
+/* --- Log In --- */
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  clearFormMessage("login-form-message");
+
+  const phoneInput = document.getElementById("login-phone");
+  const passwordInput = document.getElementById("login-password");
+
+  const phone = normalizePhone(phoneInput.value.trim());
+  const password = passwordInput.value;
+
+  let hasError = false;
+
+  if (!phone) {
+    setFieldError("login-phone", "login-phone-error", "Phone number is required.");
+    hasError = true;
+  } else if (!PHONE_REGEX.test(phone)) {
+    setFieldError("login-phone", "login-phone-error", "Enter a valid phone number.");
+    hasError = true;
+  } else {
+    setFieldError("login-phone", "login-phone-error", "");
+  }
+
+  if (!password) {
+    setFieldError("login-password", "login-password-error", "Password is required.");
+    hasError = true;
+  } else {
+    setFieldError("login-password", "login-password-error", "");
+  }
+
+  if (hasError) return;
+
+  const matchedUser = users.find(u => u.phone === phone && u.password === password);
+
+  if (!matchedUser) {
+    showFormMessage("login-form-message", "Incorrect phone number or password.", "error");
+    return;
+  }
+
+  currentUser = matchedUser;
+  saveCurrentUser();
+
+  loginForm.reset();
+  showFormMessage("login-form-message", "Logged in successfully!", "success");
+  renderAccountView();
+});
+
+/* --- Log Out --- */
+document.getElementById("logout-btn").addEventListener("click", () => {
+  currentUser = null;
+  saveCurrentUser();
+  renderAccountView();
+  showView("home");
+});
+
+/* ===========================
    Checkout (mock only)
    =========================== */
 document.getElementById("checkout-btn").addEventListener("click", () => {
@@ -301,6 +542,7 @@ function init() {
   renderProducts();
   renderCart();
   updateCartCount();
+  updateAccountNavLabel();
   showView("home");
 }
 
