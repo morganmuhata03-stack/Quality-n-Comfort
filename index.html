@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Clothing Store</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">Quality n Comfort</div>
+    <nav class="main-nav">
+      <button class="nav-link" data-view="home">Home</button>
+      <button class="nav-link" data-view="shop">Shop</button>
+      <button class="nav-link cart-link" data-view="cart">
+        Cart <span id="cart-count" class="cart-badge">0</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- HOME VIEW -->
+  <section id="view-home" class="view">
+    <div class="hero">
+      <h1>Simple Clothes and Accessories</h1>
+      <p>Basic, everyday clothing and accessories. Browse the shop to get started.</p>
+      <button class="btn btn-primary" data-view="shop">Go to Shop</button>
+    </div>
+  </section>
+
+  <!-- SHOP VIEW -->
+  <section id="view-shop" class="view">
+    <h2>Shop</h2>
+
+    <div class="filter-bar">
+      <label for="category-filter">Category:</label>
+      <select id="category-filter">
+        <option value="all">All</option>
+        <option value="tops">Tops</option>
+        <option value="bottoms">Bottoms</option>
+        <option value="accessories">Accessories</option>
+      </select>
+    </div>
+
+    <div id="product-grid" class="product-grid">
+      <!-- products injected by JS -->
+    </div>
+  </section>
+
+  <!-- CART VIEW -->
+  <section id="view-cart" class="view">
+    <h2>Your Cart</h2>
+
+    <div id="cart-empty-message" class="empty-message">Your cart is empty.</div>
+
+    <table id="cart-table" class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Size</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Line Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="cart-items-body">
+        <!-- cart rows injected by JS -->
+      </tbody>
+    </table>
+
+    <div class="cart-summary">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">$0.00</span>
+      </div>
+      <div class="summary-row total-row">
+        <span>Total</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+      <button id="checkout-btn" class="btn btn-primary">Checkout</button>
+      <div id="checkout-message" class="checkout-message" hidden></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Contact us: support@plainwear.example | (555) 010-1234</p>
+  <p>&copy; 2026 Plainwear. All rights reserved.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
