@@ -2,19 +2,23 @@
    Product data
    =========================== */
 const PRODUCTS = [
-  { id: 1, name: "Basic Crew Tee",        price: 18.00, category: "tops",        sizes: ["S", "M", "L", "XL"] },
-  { id: 2, name: "Long Sleeve Henley",    price: 24.00, category: "tops",        sizes: ["S", "M", "L", "XL"] },
-  { id: 3, name: "Flannel Shirt",         price: 32.00, category: "tops",        sizes: ["S", "M", "L", "XL"] },
-  { id: 4, name: "Pullover Hoodie",       price: 38.00, category: "tops",        sizes: ["S", "M", "L", "XL"] },
-  { id: 5, name: "Straight Leg Jeans",    price: 45.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"] },
-  { id: 6, name: "Chino Trousers",        price: 40.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"] },
-  { id: 7, name: "Jogger Sweatpants",     price: 30.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"] },
-  { id: 8, name: "Cargo Shorts",          price: 28.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"] },
-  { id: 9, name: "Canvas Belt",           price: 14.00, category: "accessories", sizes: ["S", "M", "L", "XL"] },
-  { id: 10, name: "Wool Beanie",          price: 12.00, category: "accessories", sizes: ["S", "M", "L", "XL"] },
-  { id: 11, name: "Crew Socks (3-pack)",  price: 10.00, category: "accessories", sizes: ["S", "M", "L", "XL"] },
-  { id: 12, name: "Canvas Tote Bag",      price: 16.00, category: "accessories", sizes: ["S", "M", "L", "XL"] }
+  { id: 1, name: "Basic Crew Tee",        price: 18.00, category: "tops",        sizes: ["S", "M", "L", "XL"], imageQuery: "african,tshirt,streetstyle" },
+  { id: 2, name: "Long Sleeve Henley",    price: 24.00, category: "tops",        sizes: ["S", "M", "L", "XL"], imageQuery: "african,streetstyle,shirt" },
+  { id: 3, name: "Flannel Shirt",         price: 32.00, category: "tops",        sizes: ["S", "M", "L", "XL"], imageQuery: "african,streetstyle,flannel" },
+  { id: 4, name: "Pullover Hoodie",       price: 38.00, category: "tops",        sizes: ["S", "M", "L", "XL"], imageQuery: "african,hoodie,streetwear" },
+  { id: 5, name: "Straight Leg Jeans",    price: 45.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"], imageQuery: "african,denim,streetstyle" },
+  { id: 6, name: "Chino Trousers",        price: 40.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"], imageQuery: "african,streetstyle,trousers" },
+  { id: 7, name: "Jogger Sweatpants",     price: 30.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"], imageQuery: "african,joggers,streetwear" },
+  { id: 8, name: "Cargo Shorts",          price: 28.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"], imageQuery: "african,cargo,streetwear" },
+  { id: 9, name: "Canvas Belt",           price: 14.00, category: "accessories", sizes: ["S", "M", "L", "XL"], imageQuery: "african,belt,streetstyle" },
+  { id: 10, name: "Wool Beanie",          price: 12.00, category: "accessories", sizes: ["S", "M", "L", "XL"], imageQuery: "african,beanie,streetwear" },
+  { id: 11, name: "Crew Socks (3-pack)",  price: 10.00, category: "accessories", sizes: ["S", "M", "L", "XL"], imageQuery: "african,socks,streetwear" },
+  { id: 12, name: "Canvas Tote Bag",      price: 16.00, category: "accessories", sizes: ["S", "M", "L", "XL"], imageQuery: "african,totebag,streetstyle" }
 ];
+
+function getProductImageUrl(product) {
+  return `https://loremflickr.com/500/500/${encodeURIComponent(product.imageQuery)}?lock=${product.id}`;
+}
 
 /* ===========================
    Cart state (persisted to localStorage)
@@ -103,8 +107,9 @@ function showView(viewName) {
   const target = document.getElementById(`view-${viewName}`);
   if (target) target.classList.add("active");
 
-  document.querySelectorAll(".nav-link[data-view]").forEach(btn => {
-    btn.classList.toggle("active-nav", btn.getAttribute("data-view") === viewName);
+  // Keep the top-level nav underline in sync (Home / Shop only)
+  document.querySelectorAll(".main-nav .nav-link").forEach(link => {
+    link.classList.toggle("active", link.getAttribute("data-view") === viewName);
   });
 
   if (viewName === "account") {
@@ -114,6 +119,11 @@ function showView(viewName) {
 
 document.querySelectorAll("[data-view]").forEach(el => {
   el.addEventListener("click", () => {
+    // Home-page category shortcuts also preset the shop filter
+    const presetCategory = el.getAttribute("data-category");
+    if (presetCategory) {
+      setActiveCategory(presetCategory);
+    }
     showView(el.getAttribute("data-view"));
   });
 });
@@ -122,7 +132,22 @@ document.querySelectorAll("[data-view]").forEach(el => {
    Product rendering
    =========================== */
 const productGrid = document.getElementById("product-grid");
-const categoryFilterGroup = document.getElementById("category-filter-group");
+const filterBar = document.getElementById("filter-bar");
+let activeCategory = "all";
+
+function setActiveCategory(category) {
+  activeCategory = category;
+  document.querySelectorAll(".filter-chip").forEach(chip => {
+    chip.classList.toggle("active", chip.getAttribute("data-category") === category);
+  });
+  renderProducts(category);
+}
+
+filterBar.addEventListener("click", (e) => {
+  const chip = e.target.closest(".filter-chip");
+  if (!chip) return;
+  setActiveCategory(chip.getAttribute("data-category"));
+});
 
 function renderProducts(filterCategory = "all") {
   productGrid.innerHTML = "";
@@ -136,8 +161,16 @@ function renderProducts(filterCategory = "all") {
     card.className = "product-card";
 
     const placeholder = document.createElement("div");
-    placeholder.className = "product-placeholder";
-    placeholder.textContent = product.name;
+    placeholder.className = "product-card-image";
+
+    const img = document.createElement("img");
+    img.src = getProductImageUrl(product);
+    img.alt = product.name;
+    img.loading = "lazy";
+    placeholder.appendChild(img);
+
+    const body = document.createElement("div");
+    body.className = "product-card-body";
 
     const name = document.createElement("div");
     name.className = "product-name";
@@ -165,7 +198,7 @@ function renderProducts(filterCategory = "all") {
 
     const addBtn = document.createElement("button");
     addBtn.className = "btn btn-primary btn-small";
-    addBtn.textContent = "Add to Cart";
+    addBtn.textContent = "Add";
     addBtn.addEventListener("click", () => {
       addToCart(product, sizeSelect.value);
     });
@@ -173,23 +206,17 @@ function renderProducts(filterCategory = "all") {
     controls.appendChild(sizeSelect);
     controls.appendChild(addBtn);
 
+    body.appendChild(name);
+    body.appendChild(category);
+    body.appendChild(price);
+    body.appendChild(controls);
+
     card.appendChild(placeholder);
-    card.appendChild(name);
-    card.appendChild(category);
-    card.appendChild(price);
-    card.appendChild(controls);
+    card.appendChild(body);
 
     productGrid.appendChild(card);
   });
 }
-
-categoryFilterGroup.querySelectorAll(".filter-chip").forEach(chip => {
-  chip.addEventListener("click", () => {
-    categoryFilterGroup.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
-    chip.classList.add("active");
-    renderProducts(chip.getAttribute("data-category"));
-  });
-});
 
 /* ===========================
    Cart logic
@@ -251,46 +278,65 @@ function updateCartCount() {
 /* ===========================
    Cart rendering
    =========================== */
-const cartItemsBody = document.getElementById("cart-items-body");
-const cartTable = document.getElementById("cart-table");
+const cartItemsList = document.getElementById("cart-items-list");
 const cartEmptyMessage = document.getElementById("cart-empty-message");
 
 function renderCart() {
-  cartItemsBody.innerHTML = "";
+  cartItemsList.innerHTML = "";
 
-  if (cart.length === 0) {
-    cartTable.style.display = "none";
-    cartEmptyMessage.style.display = "block";
-  } else {
-    cartTable.style.display = "table";
-    cartEmptyMessage.style.display = "none";
-  }
+  cartEmptyMessage.style.display = cart.length === 0 ? "block" : "none";
+  cartItemsList.style.display = cart.length === 0 ? "none" : "flex";
 
   cart.forEach(item => {
-    const row = document.createElement("tr");
+    const row = document.createElement("div");
+    row.className = "cart-item-row";
 
-    const nameCell = document.createElement("td");
-    nameCell.textContent = item.name;
+    const thumb = document.createElement("div");
+    thumb.className = "cart-item-thumb";
+    thumb.textContent = item.name;
 
-    const sizeCell = document.createElement("td");
-    sizeCell.textContent = item.size;
+    const info = document.createElement("div");
+    info.className = "cart-item-info";
 
-    const priceCell = document.createElement("td");
-    priceCell.textContent = formatCurrency(item.price);
+    const name = document.createElement("div");
+    name.className = "cart-item-name";
+    name.textContent = item.name;
 
-    const qtyCell = document.createElement("td");
+    const meta = document.createElement("div");
+    meta.className = "cart-item-meta";
+    meta.textContent = `Size ${item.size}`;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "remove-link";
+    removeBtn.textContent = "Remove";
+    removeBtn.addEventListener("click", () => removeFromCart(item.productId, item.size));
+
+    info.appendChild(name);
+    info.appendChild(meta);
+    info.appendChild(removeBtn);
+
+    const price = document.createElement("div");
+    price.className = "cart-item-price";
+    price.textContent = formatCurrency(item.price * item.quantity);
+
+    const actions = document.createElement("div");
+    actions.className = "cart-item-actions";
+
     const qtyWrapper = document.createElement("div");
     qtyWrapper.className = "qty-controls";
 
     const decBtn = document.createElement("button");
-    decBtn.textContent = "-";
+    decBtn.className = "qty-btn";
+    decBtn.textContent = "–";
     decBtn.setAttribute("aria-label", `Decrease quantity of ${item.name}`);
     decBtn.addEventListener("click", () => changeQuantity(item.productId, item.size, -1));
 
     const qtyValue = document.createElement("span");
+    qtyValue.className = "qty-value";
     qtyValue.textContent = item.quantity;
 
     const incBtn = document.createElement("button");
+    incBtn.className = "qty-btn";
     incBtn.textContent = "+";
     incBtn.setAttribute("aria-label", `Increase quantity of ${item.name}`);
     incBtn.addEventListener("click", () => changeQuantity(item.productId, item.size, 1));
@@ -298,26 +344,15 @@ function renderCart() {
     qtyWrapper.appendChild(decBtn);
     qtyWrapper.appendChild(qtyValue);
     qtyWrapper.appendChild(incBtn);
-    qtyCell.appendChild(qtyWrapper);
 
-    const lineTotalCell = document.createElement("td");
-    lineTotalCell.textContent = formatCurrency(item.price * item.quantity);
+    actions.appendChild(price);
+    actions.appendChild(qtyWrapper);
 
-    const removeCell = document.createElement("td");
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "remove-btn";
-    removeBtn.textContent = "Remove";
-    removeBtn.addEventListener("click", () => removeFromCart(item.productId, item.size));
-    removeCell.appendChild(removeBtn);
+    row.appendChild(thumb);
+    row.appendChild(info);
+    row.appendChild(actions);
 
-    row.appendChild(nameCell);
-    row.appendChild(sizeCell);
-    row.appendChild(priceCell);
-    row.appendChild(qtyCell);
-    row.appendChild(lineTotalCell);
-    row.appendChild(removeCell);
-
-    cartItemsBody.appendChild(row);
+    cartItemsList.appendChild(row);
   });
 
   const { subtotal, total } = getCartTotals();
@@ -361,7 +396,7 @@ function renderAccountView() {
 }
 
 function updateAccountNavLabel() {
-  accountNavBtn.textContent = currentUser ? `Hi, ${currentUser.fullName.split(" ")[0]}` : "Login";
+  accountNavBtn.textContent = currentUser ? `Hi, ${currentUser.fullName.split(" ")[0]}` : "Sign In";
 }
 
 /* --- Tab switching between Log In / Sign Up --- */
@@ -522,7 +557,7 @@ document.getElementById("checkout-btn").addEventListener("click", () => {
 
   if (cart.length === 0) {
     checkoutMessage.hidden = false;
-    checkoutMessage.textContent = "Your cart is empty. Add items before checking out.";
+    checkoutMessage.textContent = "Your bag is empty. Add items before checking out.";
     return;
   }
 
