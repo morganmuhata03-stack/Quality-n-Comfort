@@ -2,18 +2,18 @@
    Product data
    =========================== */
 const PRODUCTS = [
-  { id: 1, name: "Basic Crew Tee",        price: 18.00, category: "tops",        sizes: ["S", "M", "L", "XL"] },
-  { id: 2, name: "Long Sleeve Henley",    price: 24.00, category: "tops",        sizes: ["S", "M", "L", "XL"] },
-  { id: 3, name: "Flannel Shirt",         price: 32.00, category: "tops",        sizes: ["S", "M", "L", "XL"] },
-  { id: 4, name: "Pullover Hoodie",       price: 38.00, category: "tops",        sizes: ["S", "M", "L", "XL"] },
-  { id: 5, name: "Straight Leg Jeans",    price: 45.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"] },
-  { id: 6, name: "Chino Trousers",        price: 40.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"] },
-  { id: 7, name: "Jogger Sweatpants",     price: 30.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"] },
-  { id: 8, name: "Cargo Shorts",          price: 28.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"] },
-  { id: 9, name: "Canvas Belt",           price: 14.00, category: "accessories", sizes: ["S", "M", "L", "XL"] },
-  { id: 10, name: "Wool Beanie",          price: 12.00, category: "accessories", sizes: ["S", "M", "L", "XL"] },
-  { id: 11, name: "Crew Socks (3-pack)",  price: 10.00, category: "accessories", sizes: ["S", "M", "L", "XL"] },
-  { id: 12, name: "Canvas Tote Bag",      price: 16.00, category: "accessories", sizes: ["S", "M", "L", "XL"] }
+  { id: 1, name: "Ankara Print Shirt",       price: 320.00, category: "tops",        sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/36673279/pexels-photo-36673279.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 2, name: "Kitenge Print Shirt",      price: 380.00, category: "tops",        sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/14197777/pexels-photo-14197777.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 3, name: "Dashiki Shirt",             price: 420.00, category: "tops",        sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/34735729/pexels-photo-34735729.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 4, name: "Traditional Kaftan",        price: 650.00, category: "tops",        sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/32919050/pexels-photo-32919050.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 5, name: "African Print Trousers",    price: 520.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/29133970/pexels-photo-29133970.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 6, name: "Kitenge Wrap Skirt",        price: 460.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/35549954/pexels-photo-35549954.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 7, name: "Ankara Casual Trousers",    price: 490.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/34647283/pexels-photo-34647283.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 8, name: "Patterned Relaxed Shorts",  price: 280.00, category: "bottoms",     sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/37633515/pexels-photo-37633515.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 9, name: "Woven Statement Belt",      price: 180.00, category: "accessories", sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/31809999/pexels-photo-31809999.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 10, name: "Traditional Pattern Cap",  price: 160.00, category: "accessories", sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/32668005/pexels-photo-32668005.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 11, name: "African Print Scarf",        price: 220.00, category: "accessories", sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/29433617/pexels-photo-29433617.jpeg?auto=compress&cs=tinysrgb&w=900" },
+  { id: 12, name: "Kitenge Tote Bag",           price: 240.00, category: "accessories", sizes: ["S", "M", "L", "XL"], image: "https://images.pexels.com/photos/36866087/pexels-photo-36866087.jpeg?auto=compress&cs=tinysrgb&w=900" }
 ];
 
 /* ===========================
@@ -135,9 +135,14 @@ function renderProducts(filterCategory = "all") {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    const placeholder = document.createElement("div");
-    placeholder.className = "product-placeholder";
-    placeholder.textContent = product.name;
+    const imageWrap = document.createElement("div");
+    imageWrap.className = "product-placeholder";
+
+    const image = document.createElement("img");
+    image.src = product.image;
+    image.alt = product.name;
+    image.loading = "lazy";
+    imageWrap.appendChild(image);
 
     const name = document.createElement("div");
     name.className = "product-name";
@@ -173,7 +178,7 @@ function renderProducts(filterCategory = "all") {
     controls.appendChild(sizeSelect);
     controls.appendChild(addBtn);
 
-    card.appendChild(placeholder);
+    card.appendChild(imageWrap);
     card.appendChild(name);
     card.appendChild(category);
     card.appendChild(price);
@@ -540,7 +545,7 @@ document.getElementById("checkout-btn").addEventListener("click", () => {
    Utilities
    =========================== */
 function formatCurrency(amount) {
-  return `$${amount.toFixed(2)}`;
+  return `K${amount.toFixed(2)}`;
 }
 
 /* ===========================
