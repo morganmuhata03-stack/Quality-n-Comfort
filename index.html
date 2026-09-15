@@ -3,29 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PLAINWEAR</title>
+<title>Basic Clothing Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- UTILITY BAR -->
 <div class="utility-bar">
-  <span>Free Shipping on Orders $75+</span>
+  <div class="utility-bar-inner">Find a Store &middot; Help</div>
 </div>
 
 <header class="site-header">
   <div class="header-inner">
     <div class="logo">QUALITY N COMFORT</div>
     <nav class="main-nav">
-      <button class="nav-link active" data-view="home">Home</button>
+      <button class="nav-link" data-view="home">Home</button>
       <button class="nav-link" data-view="shop">Shop</button>
-    </nav>
-    <div class="nav-right">
-      <button class="nav-link" id="account-nav-btn" data-view="account">Sign In</button>
       <button class="nav-link cart-link" data-view="cart">
-        Bag <span id="cart-count" class="cart-badge">0</span>
+        Cart <span id="cart-count" class="cart-badge">0</span>
       </button>
-    </div>
+      <button class="nav-link" id="account-nav-btn" data-view="account">Login</button>
+    </nav>
   </div>
 </header>
 
@@ -34,42 +34,23 @@
   <!-- HOME VIEW -->
   <section id="view-home" class="view">
     <div class="campaign-tile">
-      <img class="campaign-image" src="https://picsum.photos/seed/plainwear-hero-urban/1600/700" alt="">
-      <div class="campaign-overlay"></div>
-      <div class="campaign-copy">
-        <h1 class="campaign-headline">Just&nbsp;Wear&nbsp;It</h1>
-        <button class="btn btn-outline-on-image" data-view="shop">Shop New Arrivals</button>
+      <div class="campaign-tile-copy">
+        <h1 class="campaign-headline">Simple Clothes.<br>No Fuss.</h1>
+        <p class="campaign-subtext">Basic, everyday clothing and accessories.</p>
       </div>
-    </div>
-
-    <div class="section-block">
-      <h2 class="heading-xl">Shop by Category</h2>
-      <div class="category-icon-grid">
-        <button class="category-icon-card" data-view="shop" data-category="tops">
-          <img class="category-icon" src="https://picsum.photos/seed/plainwear-cat-tops/160/160" alt="Tops">
-          <span class="caption-md">Tops</span>
-        </button>
-        <button class="category-icon-card" data-view="shop" data-category="bottoms">
-          <img class="category-icon" src="https://picsum.photos/seed/plainwear-cat-bottoms/160/160" alt="Bottoms">
-          <span class="caption-md">Bottoms</span>
-        </button>
-        <button class="category-icon-card" data-view="shop" data-category="accessories">
-          <img class="category-icon" src="https://picsum.photos/seed/plainwear-cat-accessories/160/160" alt="Accessories">
-          <span class="caption-md">Accessories</span>
-        </button>
-      </div>
+      <button class="btn btn-outline-on-image" data-view="shop">Shop Now</button>
     </div>
   </section>
 
   <!-- SHOP VIEW -->
   <section id="view-shop" class="view">
-    <h2 class="heading-xl">Shop</h2>
+    <h2>Shop</h2>
 
-    <div class="filter-bar" id="filter-bar">
-      <button class="filter-chip active" data-category="all">All</button>
-      <button class="filter-chip" data-category="tops">Tops</button>
-      <button class="filter-chip" data-category="bottoms">Bottoms</button>
-      <button class="filter-chip" data-category="accessories">Accessories</button>
+    <div class="filter-bar" id="category-filter-group">
+      <button type="button" class="filter-chip active" data-category="all">All</button>
+      <button type="button" class="filter-chip" data-category="tops">Tops</button>
+      <button type="button" class="filter-chip" data-category="bottoms">Bottoms</button>
+      <button type="button" class="filter-chip" data-category="accessories">Accessories</button>
     </div>
 
     <div id="product-grid" class="product-grid">
@@ -79,13 +60,25 @@
 
   <!-- CART VIEW -->
   <section id="view-cart" class="view">
-    <h2 class="heading-xl">Your Bag</h2>
+    <h2>Your Cart</h2>
 
-    <div id="cart-empty-message" class="empty-message">Your bag is empty.</div>
+    <div id="cart-empty-message" class="empty-message">Your cart is empty.</div>
 
-    <div id="cart-items-list" class="cart-items-list">
-      <!-- cart rows injected by JS -->
-    </div>
+    <table id="cart-table" class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Size</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Line Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="cart-items-body">
+        <!-- cart rows injected by JS -->
+      </tbody>
+    </table>
 
     <div class="cart-summary">
       <div class="summary-row">
@@ -96,7 +89,7 @@
         <span>Total</span>
         <span id="cart-total">$0.00</span>
       </div>
-      <button id="checkout-btn" class="btn btn-primary btn-full">Checkout</button>
+      <button id="checkout-btn" class="btn btn-primary">Checkout</button>
       <div id="checkout-message" class="checkout-message" hidden></div>
     </div>
   </section>
@@ -107,13 +100,13 @@
     <!-- Shown when logged OUT -->
     <div id="auth-forms">
       <div class="auth-tabs">
-        <button type="button" class="filter-chip auth-tab-btn active" data-auth-tab="login">Log In</button>
-        <button type="button" class="filter-chip auth-tab-btn" data-auth-tab="signup">Sign Up</button>
+        <button type="button" class="auth-tab-btn active" data-auth-tab="login">Log In</button>
+        <button type="button" class="auth-tab-btn" data-auth-tab="signup">Sign Up</button>
       </div>
 
       <!-- LOGIN FORM -->
       <form id="login-form" class="auth-form active" novalidate>
-        <h2 class="heading-lg">Log In</h2>
+        <h2>Log In</h2>
 
         <div class="form-field">
           <label for="login-phone">Phone Number</label>
@@ -129,12 +122,12 @@
 
         <div class="form-message" id="login-form-message" hidden></div>
 
-        <button type="submit" class="btn btn-primary btn-full">Log In</button>
+        <button type="submit" class="btn btn-primary">Log In</button>
       </form>
 
       <!-- SIGN UP FORM -->
       <form id="signup-form" class="auth-form" novalidate>
-        <h2 class="heading-lg">Sign Up</h2>
+        <h2>Sign Up</h2>
 
         <div class="form-field">
           <label for="signup-name">Full Name</label>
@@ -156,15 +149,15 @@
 
         <div class="form-message" id="signup-form-message" hidden></div>
 
-        <button type="submit" class="btn btn-primary btn-full">Sign Up</button>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
       </form>
     </div>
 
     <!-- Shown when logged IN -->
     <div id="account-panel" class="account-panel" hidden>
-      <h2 class="heading-lg">My Account</h2>
-      <p id="account-welcome" class="body-md"></p>
-      <p id="account-phone" class="body-md"></p>
+      <h2>My Account</h2>
+      <p id="account-welcome"></p>
+      <p id="account-phone"></p>
       <button id="logout-btn" class="btn btn-secondary">Log Out</button>
     </div>
 
@@ -173,27 +166,8 @@
 </main>
 
 <footer class="site-footer">
-  <div class="footer-columns">
-    <div class="footer-column">
-      <h3 class="footer-heading">Shop</h3>
-      <button class="footer-link" data-view="shop">Tops</button>
-      <button class="footer-link" data-view="shop">Bottoms</button>
-      <button class="footer-link" data-view="shop">Accessories</button>
-    </div>
-    <div class="footer-column">
-      <h3 class="footer-heading">Help</h3>
-      <span class="footer-link">support@plainwear.example</span>
-      <span class="footer-link">(555) 010-1234</span>
-    </div>
-    <div class="footer-column">
-      <h3 class="footer-heading">Company</h3>
-      <button class="footer-link" data-view="home">About</button>
-      <button class="footer-link" data-view="account">Sign In</button>
-    </div>
-  </div>
-  <div class="footer-fine-print">
-    <span>&copy; 2026 Plainwear. All rights reserved.</span>
-  </div>
+  <p class="footer-contact">Contact us: support@plainwear.example &middot; (555) 010-1234</p>
+  <p class="footer-copyright">&copy; 2026 Plainwear. All rights reserved.</p>
 </footer>
 
 <script src="script.js"></script>
