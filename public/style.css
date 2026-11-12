@@ -210,10 +210,35 @@ h1, h2, h3 {
   color: var(--color-on-primary);
   border-radius: var(--radius-none);
   min-height: 420px;
+  overflow: hidden;
   padding: var(--space-xxl);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.campaign-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.42;
+}
+
+.campaign-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+  pointer-events: none;
+}
+
+.campaign-tile-copy,
+.campaign-tile .btn {
+  position: relative;
+  z-index: 1;
 }
 
 .campaign-tile-copy {
@@ -353,11 +378,22 @@ h1, h2, h3 {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: var(--space-lg);
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--color-mute);
+  overflow: hidden;
+  padding: 0;
   border-radius: var(--radius-none);
+}
+
+.product-placeholder img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.2s ease;
+}
+
+.product-card:hover .product-placeholder img {
+  transform: scale(1.02);
 }
 
 .product-name {
@@ -698,4 +734,105 @@ h1, h2, h3 {
   .product-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ===========================
+   Fixes: links, fallbacks, one-size, info message
+   =========================== */
+.utility-bar-inner a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.utility-bar-inner a:hover,
+.utility-bar-inner a:focus-visible {
+  text-decoration: underline;
+}
+
+/* Product image failed to load: keep the soft-cloud tile and show the name */
+.product-placeholder.image-missing {
+  color: var(--color-mute);
+  font-size: 14px;
+  font-weight: 500;
+  padding: var(--space-lg);
+}
+
+/* Fixed-size products (cap, scarf, tote) show a label instead of a size picker */
+.size-fixed {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 8px 16px;
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--radius-md);
+  background-color: var(--color-soft-cloud);
+  color: var(--color-mute);
+  font-size: 14px;
+}
+
+.form-message.info {
+  background-color: var(--color-soft-cloud);
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.account-panel .form-message {
+  margin-bottom: var(--space-md);
+}
+
+
+/* ===========================
+   Backend integration: toast, orders, disabled buttons
+   =========================== */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-xl);
+  transform: translateX(-50%);
+  max-width: calc(100% - 48px);
+  padding: var(--space-md) var(--space-xl);
+  background-color: var(--color-ink);
+  color: var(--color-on-primary);
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  z-index: 1000;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.orders-section {
+  margin-top: var(--space-section);
+}
+
+.orders-section h3 {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: var(--space-md);
+}
+
+.order-card {
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-md);
+  font-weight: 500;
+}
+
+.order-meta,
+.order-items {
+  font-size: 14px;
+  color: var(--color-mute);
+}
+
+.order-status {
+  text-transform: capitalize;
 }

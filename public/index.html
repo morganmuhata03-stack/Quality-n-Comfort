@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Basic Clothing Store</title>
+<title>Quality N Comfort</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <body>
 
 <div class="utility-bar">
-  <div class="utility-bar-inner">Find a Store &middot; Help</div>
+  <div class="utility-bar-inner"><a href="#contact">Find a Store</a> &middot; <a href="#contact">Help</a></div>
 </div>
 
 <header class="site-header">
@@ -34,6 +34,11 @@
   <!-- HOME VIEW -->
   <section id="view-home" class="view">
     <div class="campaign-tile">
+      <img
+        class="campaign-image"
+        id="hero-image"
+        alt="Models wearing vibrant African clothing"
+      >
       <div class="campaign-tile-copy">
         <h1 class="campaign-headline">Simple Clothes.<br>No Fuss.</h1>
         <p class="campaign-subtext">Basic, everyday clothing and accessories.</p>
@@ -52,6 +57,8 @@
       <button type="button" class="filter-chip" data-category="bottoms">Bottoms</button>
       <button type="button" class="filter-chip" data-category="accessories">Accessories</button>
     </div>
+
+    <div id="shop-empty-message" class="empty-message" hidden>No products in this category yet.</div>
 
     <div id="product-grid" class="product-grid">
       <!-- products injected by JS -->
@@ -83,11 +90,11 @@
     <div class="cart-summary">
       <div class="summary-row">
         <span>Subtotal</span>
-        <span id="cart-subtotal">$0.00</span>
+        <span id="cart-subtotal">K0.00</span>
       </div>
       <div class="summary-row total-row">
         <span>Total</span>
-        <span id="cart-total">$0.00</span>
+        <span id="cart-total">K0.00</span>
       </div>
       <button id="checkout-btn" class="btn btn-primary">Checkout</button>
       <div id="checkout-message" class="checkout-message" hidden></div>
@@ -120,7 +127,7 @@
           <span class="field-error" id="login-password-error"></span>
         </div>
 
-        <div class="form-message" id="login-form-message" hidden></div>
+        <div class="form-message" id="login-form-message" role="status" hidden></div>
 
         <button type="submit" class="btn btn-primary">Log In</button>
       </form>
@@ -147,7 +154,7 @@
           <span class="field-error" id="signup-password-error"></span>
         </div>
 
-        <div class="form-message" id="signup-form-message" hidden></div>
+        <div class="form-message" id="signup-form-message" role="status" hidden></div>
 
         <button type="submit" class="btn btn-primary">Sign Up</button>
       </form>
@@ -156,9 +163,15 @@
     <!-- Shown when logged IN -->
     <div id="account-panel" class="account-panel" hidden>
       <h2>My Account</h2>
+      <div class="form-message success" id="account-flash" role="status" hidden></div>
       <p id="account-welcome"></p>
       <p id="account-phone"></p>
       <button id="logout-btn" class="btn btn-secondary">Log Out</button>
+
+      <div id="orders-section" class="orders-section" hidden>
+        <h3>My Orders</h3>
+        <div id="orders-list"></div>
+      </div>
     </div>
 
   </section>
@@ -166,9 +179,11 @@
 </main>
 
 <footer class="site-footer">
-  <p class="footer-contact">Contact us: support@plainwear.example &middot; (555) 010-1234</p>
-  <p class="footer-copyright">&copy; 2026 Plainwear. All rights reserved.</p>
+  <p class="footer-contact" id="contact">Contact us: support@qualityncomfort.example &middot; +260 000 000 000</p>
+  <p class="footer-copyright">&copy; 2026 Quality N Comfort. All rights reserved.</p>
 </footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script src="script.js"></script>
 </body>

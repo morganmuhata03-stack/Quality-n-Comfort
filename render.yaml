@@ -1,0 +1,17 @@
+# Optional Render "Blueprint": New + > Blueprint, pick this repo.
+# You still paste DATABASE_URL (from Neon/Supabase) in the Render dashboard.
+services:
+  - type: web
+    name: quality-n-comfort
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
